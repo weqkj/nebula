@@ -1,0 +1,37 @@
+name: Nebula
+options:
+  bundleIdPrefix: com.nebula
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  Nebula:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nebula.xray
+        INFOPLIST_KEY_CFBundleDisplayName: Nebula
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: "Выбор собственных обоев для Nebula"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: 5.9
+    dependencies:
+      - target: NebulaTunnel
+
+  NebulaTunnel:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Tunnel
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nebula.xray.tunnel
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
+        INFOPLIST_KEY_NSExtension_NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).PacketTunnelProvider"
+        SWIFT_VERSION: 5.9
