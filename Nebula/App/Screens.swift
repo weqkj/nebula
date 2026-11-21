@@ -9,10 +9,10 @@ struct StyleView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Стиль").font(bold(36)).foregroundStyle(t.onSurface).reveal(0)
+                Text("Стиль").font(fnt(36)).foregroundStyle(t.onSurface).reveal(0)
 
                 card("Имя", 0.05) {
-                    TextField("Как вас зовут?", text: $t.userName).font(bold(17, .semibold)).foregroundStyle(t.onSurface)
+                    TextField("Как вас зовут?", text: $t.userName).font(fnt(17, .semibold)).foregroundStyle(t.onSurface)
                 }
                 card("Цвет", 0.1) {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -33,7 +33,7 @@ struct StyleView: View {
                             var h: CGFloat = 0
                             UIColor(c).getHue(&h, saturation: nil, brightness: nil, alpha: nil)
                             t.hue = Double(h)
-                        })).font(bold(15, .bold)).foregroundStyle(t.onSurface)
+                        })).font(fnt(15, .bold)).foregroundStyle(t.onSurface)
                 }
                 card("Тема", 0.15) {
                     Picker("", selection: $t.mode) {
@@ -44,7 +44,7 @@ struct StyleView: View {
                     HStack {
                         PhotosPicker(selection: $item, matching: .images) {
                             Label("Выбрать фото", systemImage: "photo.fill")
-                                .font(bold(15)).padding(.horizontal, 20).frame(height: 44)
+                                .font(fnt(15)).padding(.horizontal, 20).frame(height: 44)
                                 .foregroundStyle(t.onPrimary).background(t.primary, in: Capsule())
                         }
                         if t.wallpaper != nil {
@@ -53,7 +53,7 @@ struct StyleView: View {
                         }
                     }
                     if t.wallpaper != nil {
-                        Text("Затемнение").font(bold(13, .bold)).foregroundStyle(t.onSurfaceVariant)
+                        Text("Затемнение").font(fnt(13, .bold)).foregroundStyle(t.onSurfaceVariant)
                         Slider(value: $t.dim, in: 0...0.8)
                     }
                 }
@@ -73,7 +73,7 @@ struct StyleView: View {
 
     private func card<C: View>(_ title: String, _ d: Double, @ViewBuilder _ c: () -> C) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title).font(bold(14)).foregroundStyle(t.onSurfaceVariant)
+            Text(title).font(fnt(14)).foregroundStyle(t.onSurfaceVariant)
             c()
         }
         .padding(18).frame(maxWidth: .infinity, alignment: .leading).glass(28).reveal(d)
@@ -119,10 +119,10 @@ struct WelcomeView: View {
                     VStack(spacing: 22) {
                         Spacer()
                         Blob(icon: icons[i])
-                        Text(titles[i]).font(bold(32)).multilineTextAlignment(.center).foregroundStyle(t.onSurface)
-                        Text(texts[i]).font(bold(16, .semibold)).multilineTextAlignment(.center).foregroundStyle(t.onSurfaceVariant)
+                        Text(titles[i]).font(fnt(32)).multilineTextAlignment(.center).foregroundStyle(t.onSurface)
+                        Text(texts[i]).font(fnt(16, .semibold)).multilineTextAlignment(.center).foregroundStyle(t.onSurfaceVariant)
                         if i == 2 {
-                            TextField("Ваше имя", text: $t.userName).font(bold(18, .bold)).multilineTextAlignment(.center)
+                            TextField("Ваше имя", text: $t.userName).font(fnt(18, .bold)).multilineTextAlignment(.center)
                                 .padding(14).glass(22).padding(.horizontal, 40)
                             HStack(spacing: 10) {
                                 ForEach(Theme.presets) { p in

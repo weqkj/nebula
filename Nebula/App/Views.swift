@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-func bold(_ s: CGFloat, _ w: Font.Weight = .heavy) -> Font { .system(size: s, weight: w, design: .rounded) }
+func fnt(_ s: CGFloat, _ w: Font.Weight = .heavy) -> Font { .system(size: s, weight: w, design: .rounded) }
 
 enum Tab: String, CaseIterable {
     case home = "Главная", servers = "Серверы", style = "Стиль"
@@ -88,7 +88,7 @@ struct NavBar: View {
                 } label: {
                     VStack(spacing: 3) {
                         Image(systemName: item.icon).font(.system(size: 20, weight: .heavy))
-                        Text(item.rawValue).font(bold(11))
+                        Text(item.rawValue).font(fnt(11))
                     }
                     .foregroundStyle(tab == item ? t.onPrimaryContainer : t.onSurfaceVariant)
                     .frame(maxWidth: .infinity).frame(height: 56)
@@ -138,7 +138,7 @@ struct HomeView: View {
                     tile("Подписок", "\(store.subs.count)", "tray.full.fill")
                 }.reveal(0.24)
                 if let n = vpn.note {
-                    Text(n).font(bold(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
+                    Text(n).font(fnt(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
                         .multilineTextAlignment(.center).padding(.horizontal, 12)
                 }
             }
@@ -149,13 +149,13 @@ struct HomeView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(greeting).font(bold(15, .bold)).foregroundStyle(t.onSurfaceVariant)
+                Text(greeting).font(fnt(15, .bold)).foregroundStyle(t.onSurfaceVariant)
                 Text(t.userName.isEmpty ? "Nebula" : t.userName)
-                    .font(bold(36)).foregroundStyle(t.onSurface)
+                    .font(fnt(36)).foregroundStyle(t.onSurface)
             }
             Spacer()
             Text(String((t.userName.isEmpty ? "N" : t.userName).prefix(1)).uppercased())
-                .font(bold(22)).foregroundStyle(t.onTertiaryContainer)
+                .font(fnt(22)).foregroundStyle(t.onTertiaryContainer)
                 .frame(width: 52, height: 52).background(t.tertiaryContainer, in: Circle())
         }
     }
@@ -180,7 +180,7 @@ struct HomeView: View {
             .animation(.spring(response: 0.7, dampingFraction: 0.6), value: vpn.state)
 
             VStack(spacing: 4) {
-                Text(title).font(bold(28)).foregroundStyle(t.onSurface)
+                Text(title).font(fnt(28)).foregroundStyle(t.onSurface)
                 if let s = vpn.since {
                     TimelineView(.periodic(from: s, by: 1)) { ctx in
                         let n = Int(ctx.date.timeIntervalSince(s))
@@ -189,7 +189,7 @@ struct HomeView: View {
                             .foregroundStyle(t.primary)
                     }
                 } else {
-                    Text("Нажмите, чтобы подключиться").font(bold(14, .semibold)).foregroundStyle(t.onSurfaceVariant)
+                    Text("Нажмите, чтобы подключиться").font(fnt(14, .semibold)).foregroundStyle(t.onSurfaceVariant)
                 }
             }
         }
@@ -202,9 +202,9 @@ struct HomeView: View {
                 .foregroundStyle(t.onTertiaryContainer)
                 .frame(width: 52, height: 52).background(t.tertiaryContainer, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             VStack(alignment: .leading, spacing: 2) {
-                Text(store.current?.name ?? "Сервер не выбран").font(bold(17)).foregroundStyle(t.onSurface).lineLimit(1)
+                Text(store.current?.name ?? "Сервер не выбран").font(fnt(17)).foregroundStyle(t.onSurface).lineLimit(1)
                 Text(store.current.map { "\($0.proto.uppercased()) · \($0.network) · \($0.security)" } ?? "Добавьте во вкладке «Серверы»")
-                    .font(bold(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
+                    .font(fnt(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
             }
             Spacer()
         }
@@ -214,8 +214,8 @@ struct HomeView: View {
     private func tile(_ label: String, _ value: String, _ icon: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Image(systemName: icon).font(.system(size: 18, weight: .heavy)).foregroundStyle(t.primary)
-            Text(value).font(bold(32)).foregroundStyle(t.onSurface).contentTransition(.numericText())
-            Text(label).font(bold(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
+            Text(value).font(fnt(32)).foregroundStyle(t.onSurface).contentTransition(.numericText())
+            Text(label).font(fnt(12, .semibold)).foregroundStyle(t.onSurfaceVariant)
         }
         .padding(18).frame(maxWidth: .infinity, alignment: .leading).glass(28)
     }
@@ -253,7 +253,7 @@ struct ServersView: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    Text("Серверы").font(bold(36)).foregroundStyle(t.onSurface)
+                    Text("Серверы").font(fnt(36)).foregroundStyle(t.onSurface)
                     Spacer()
                     Button { tap(); pinging = true; Task { await store.pingAll(); pinging = false } } label: {
                         Image(systemName: "speedometer").font(.system(size: 18, weight: .heavy))
@@ -270,8 +270,8 @@ struct ServersView: View {
                 if store.servers.isEmpty {
                     VStack(spacing: 10) {
                         Image(systemName: "tray").font(.system(size: 40, weight: .heavy)).foregroundStyle(t.primary)
-                        Text("Пусто").font(bold(20)).foregroundStyle(t.onSurface)
-                        Text("Нажмите + и вставьте ссылки или адрес подписки").font(bold(13, .semibold))
+                        Text("Пусто").font(fnt(20)).foregroundStyle(t.onSurface)
+                        Text("Нажмите + и вставьте ссылки или адрес подписки").font(fnt(13, .semibold))
                             .foregroundStyle(t.onSurfaceVariant).multilineTextAlignment(.center)
                     }.padding(30).frame(maxWidth: .infinity).glass(32).reveal(0.1)
                 }
@@ -290,7 +290,7 @@ struct ServersView: View {
     private func group(_ title: String, _ list: [Server], _ sub: Subscription?, _ d: Double) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(title).font(bold(16)).foregroundStyle(t.onSurfaceVariant)
+                Text(title).font(fnt(16)).foregroundStyle(t.onSurfaceVariant)
                 Spacer()
                 if let sub {
                     Button { tap(); Task { await store.refresh(sub) } } label: { Image(systemName: "arrow.triangle.2.circlepath") }
@@ -306,12 +306,12 @@ struct ServersView: View {
         let on = store.current?.id == s.id
         return Button { tap(); withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) { store.selected = s.id } } label: {
             HStack(spacing: 12) {
-                Text(s.proto.uppercased().prefix(2)).font(bold(13)).foregroundStyle(on ? t.onPrimary : t.onSecondaryContainer)
+                Text(s.proto.uppercased().prefix(2)).font(fnt(13)).foregroundStyle(on ? t.onPrimary : t.onSecondaryContainer)
                     .frame(width: 40, height: 40)
                     .background(on ? t.primary : t.secondaryContainer, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(s.name).font(bold(15)).foregroundStyle(t.onSurface).lineLimit(1)
-                    Text("\(s.address):\(s.port) · \(s.network) · \(s.security)").font(bold(11, .semibold))
+                    Text(s.name).font(fnt(15)).foregroundStyle(t.onSurface).lineLimit(1)
+                    Text("\(s.address):\(s.port) · \(s.network) · \(s.security)").font(fnt(11, .semibold))
                         .foregroundStyle(t.onSurfaceVariant).lineLimit(1)
                 }
                 Spacer()
@@ -327,7 +327,7 @@ struct ServersView: View {
 
     @ViewBuilder private func pingChip(_ p: Int?) -> some View {
         if let p {
-            Text(p < 0 ? "×" : "\(p) мс").font(bold(12))
+            Text(p < 0 ? "×" : "\(p) мс").font(fnt(12))
                 .foregroundStyle(p < 0 ? t.bad : (p < 250 ? t.good : t.onSurfaceVariant))
         }
     }
@@ -349,15 +349,15 @@ struct AddSheet: View {
         ZStack {
             AppBackground()
             VStack(alignment: .leading, spacing: 16) {
-                Text("Добавить").font(bold(30)).foregroundStyle(t.onSurface)
+                Text("Добавить").font(fnt(30)).foregroundStyle(t.onSurface)
                 Text("Ссылки vless / vmess / trojan / ss (по одной в строке) или https-адрес подписки")
-                    .font(bold(13, .semibold)).foregroundStyle(t.onSurfaceVariant)
+                    .font(fnt(13, .semibold)).foregroundStyle(t.onSurfaceVariant)
                 TextEditor(text: $text).scrollContentBackground(.hidden)
                     .font(.system(size: 13, design: .monospaced)).foregroundStyle(t.onSurface)
                     .textInputAutocapitalization(.never).autocorrectionDisabled()
                     .padding(12).frame(height: 170).glass(22)
                 if isURL {
-                    TextField("Название подписки", text: $name).font(bold(15, .semibold))
+                    TextField("Название подписки", text: $name).font(fnt(15, .semibold))
                         .padding(14).glass(18).transition(.move(edge: .top).combined(with: .opacity))
                 }
                 HStack {
@@ -366,7 +366,7 @@ struct AddSheet: View {
                     Button { add() } label: { Text(busy ? "Загрузка…" : "Добавить") }
                         .buttonStyle(PillButton()).disabled(busy || trimmed.isEmpty)
                 }
-                if let msg { Text(msg).font(bold(13, .semibold)).foregroundStyle(t.bad) }
+                if let msg { Text(msg).font(fnt(13, .semibold)).foregroundStyle(t.bad) }
                 Spacer()
             }
             .padding(24).animation(.spring(response: 0.4, dampingFraction: 0.8), value: isURL)
