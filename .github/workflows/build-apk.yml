@@ -1,0 +1,67 @@
+name: Build APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: nebula }
+      - uses: actions/checkout@v4
+        with:
+          repository: 2dust/v2rayNG
+          path: up
+          submodules: recursive
+          fetch-depth: 0
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-36 build-tools;36.0.0 platform-tools'
+      - name: NDK
+        run: |
+          echo y | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;28.2.13676358"
+          echo "NDK_HOME=$ANDROID_HOME/ndk/28.2.13676358" >> $GITHUB_ENV
+      - name: Build hev tunnel
+        working-directory: up
+        run: bash compile-hevtun.sh
+      - name: Copy hev libs
+        run: cp -r up/libs up/V2rayNG/app
+      - name: Xray core tag
+        working-directory: up/AndroidLibXrayLite
+        run: echo "CURRENT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - uses: robinraju/release-downloader@v1.11
+        with:
+          repository: 2dust/AndroidLibXrayLite
+          tag: ${{ env.CURRENT_TAG }}
+          fileName: libv2ray.aar
+          out-file-path: up/V2rayNG/app/libs/
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - name: Rebrand to Nebula
+        run: |
+          R=up/V2rayNG/app/src/main/res
+          sed -i 's#<string name="app_name" translatable="false">[^<]*#<string name="app_name" translatable="false">Nebula#' $R/values/strings.xml
+          sed -i 's/applicationId = "com.v2ray.ang"/applicationId = "com.nebula.vpn"/' up/V2rayNG/app/build.gradle.kts
+          cp -r nebula/android-overlay/res/. $R/
+          grep -rl 'ic_launcher_background' $R/values | xargs sed -i -E 's#(name="ic_launcher_background"[^>]*>)[^<]*#\1\#0E0C18#'
+      - name: Keystore (кэшируется, чтобы обновления ставились поверх)
+        uses: actions/cache@v4
+        with:
+          path: nebula.jks
+          key: nebula-keystore-v1
+      - name: Create keystore if missing
+        run: |
+          [ -f nebula.jks ] || keytool -genkeypair -keystore nebula.jks -storepass nebula123 -keypass nebula123 -alias nebula -keyalg RSA -keysize 2048 -validity 36500 -dname "CN=Nebula"
+      - name: Build
+        working-directory: up/V2rayNG
+        run: |
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+          chmod +x gradlew
+          ./gradlew assemblePlaystoreRelease \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/nebula.jks \
+            -Pandroid.injected.signing.store.password=nebula123 \
+            -Pandroid.injected.signing.key.alias=nebula \
+            -Pandroid.injected.signing.key.password=nebula123
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nebula-apk
+          path: up/V2rayNG/app/build/outputs/apk/*/release/*.apk
